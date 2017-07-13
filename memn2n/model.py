@@ -58,7 +58,9 @@ class MemN2N(nn.Module):
 
         u = list()
         query_embed = self.C[0](query)
+        # weired way to perform reduce_dot
         encoding = self.encoding.unsqueeze(0).expand_as(query_embed)
+        # currently (v0.12), torch.sum doesn't squeeze dimension
         u.append(torch.sum(query_embed*encoding, 1).squeeze(1))
         
         for hop in range(self.max_hops):
