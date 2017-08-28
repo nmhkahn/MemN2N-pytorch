@@ -60,25 +60,24 @@ class MemN2N(nn.Module):
         query_embed = self.C[0](query)
         # weired way to perform reduce_dot
         encoding = self.encoding.unsqueeze(0).expand_as(query_embed)
-        # currently (v0.12), torch.sum doesn't squeeze dimension
-        u.append(torch.sum(query_embed*encoding, 1).squeeze(1))
+        u.append(torch.sum(query_embed*encoding, 1))
         
         for hop in range(self.max_hops):
             embed_A = self.C[hop](story.view(story.size(0), -1))
             embed_A = embed_A.view(story_size+(embed_A.size(-1),))
        
             encoding = self.encoding.unsqueeze(0).unsqueeze(1).expand_as(embed_A)
-            m_A = torch.sum(embed_A*encoding, 2).squeeze(2)
+            m_A = torch.sum(embed_A*encoding, 2)
        
             u_temp = u[-1].unsqueeze(1).expand_as(m_A)
-            prob   = self.softmax(torch.sum(m_A*u_temp, 2).squeeze(2))
+            prob   = self.softmax(torch.sum(m_A*u_temp, 2))
         
             embed_C = self.C[hop+1](story.view(story.size(0), -1))
             embed_C = embed_C.view(story_size+(embed_C.size(-1),))
-            m_C     = torch.sum(embed_C*encoding, 2).squeeze(2)
+            m_C     = torch.sum(embed_C*encoding, 2)
        
             prob = prob.unsqueeze(2).expand_as(m_C)
-            o_k  = torch.sum(m_C*prob, 1).squeeze(1)
+            o_k  = torch.sum(m_C*prob, 1)
        
             u_k = u[-1] + o_k
             u.append(u_k)

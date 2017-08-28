@@ -1,4 +1,4 @@
-# [WIP] MemN2N-pytorch
+# MemN2N-pytorch
 PyTorch implementation of [End-To-End Memory Network](https://arxiv.org/abs/1503.08895). This code is heavily based on [memn2n](https://github.com/domluna/memn2n) by domluna.
 
 ## Dataset
